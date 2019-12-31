@@ -1,0 +1,80 @@
+1. Create EC2 Instance
+auto assign ip 
+use existing ssh key
+
+2. Connect using putty
+ec2-user@[IP Address]
+accept host key
+
+3. Update yum
+sudo yum update
+
+4. Install java 8
+sudo yum install java-1.8.0-openjdk-devel
+
+5. Install git
+sudo yum install git
+
+6. Create download folder in ~
+mkdir download
+
+7. Change to download folder
+cd download
+
+8. Clone files from challenge repo
+sudo git init
+sudo git clone -b master https://github.com/htstinson/public.git 
+sudo cp download/public/etc/yum.repos.d/* /etc/yum.repos.d/
+
+9. Create testing folder
+sudo mkdir /var/log/test
+
+10. Get elastic key
+sudo rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+11. Install logstash
+sudo yum install logstash
+
+12. copy logstash.yml
+sudo cp download/public/etc/logstash/logstash.yml /etc/logstash
+
+13. Copy conf to logstash
+sudo cp download/public/usr/share/logstash/first-pipeline.conf /usr/share/logstash
+
+14. Install alter plugin
+sudo /usr/share/logstash/bin/logstash-plugin install logstash-filter-alter
+
+15. Install filebeat
+sudo yum install filebeat
+sudo chkconfig --add filebeat
+
+16. Copy filebeat.yml
+sudo cp download/public/etc/filebeat/filebeat.yml /etc/filebeat
+
+17. Start filebeat
+sudo /usr/share/filebeat/bin/filebeat -e -c filebeat.yml -d "publish"
+
+18. Install elasticsearch
+sudo yum install --enablerepo=elasticsearch elasticsearch
+sudo chkconfig --add elasticsearch
+
+19. Start Elasticsearch
+sudo -i service elasticsearch start
+curl -X GET "localhost:9200/?pretty"
+
+20. Start logstash
+sudo /usr/share/logstash/bin/logstash -f /usr/share/logstash/first-pipeline.conf
+
+21. Copy log file to target folder
+sudo cp download/public/data/alert001.log /var/log/test
+sudo cp download/public/data/alert002.log /var/log/test
+sudo cp download/public/data/alert003.log /var/log/test
+
+22. Run elastic searches
+curl -X GET "localhost:9200/_search?pretty" -H 'Content-Type: application/json' -d'{"query": {"match_all": {}}}'
+curl -X GET "localhost:9200/_search?pretty" -H 'Content-Type: application/json' -d'{"query":{"bool":{"must":[{"match":{"severity":"High"}}]}}}'
+
+
+
+
+
