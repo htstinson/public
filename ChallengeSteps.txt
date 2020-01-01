@@ -74,6 +74,11 @@ sudo cp download/public/data/alert003.log /var/log/test
 curl -X GET "localhost:9200/_search?pretty" -H 'Content-Type: application/json' -d'{"query": {"match_all": {}}}'
 curl -X GET "localhost:9200/_search?pretty" -H 'Content-Type: application/json' -d'{"query":{"bool":{"must":[{"match":{"severity":"High"}}]}}}'
 
+23. Install kibana
+sudo yum install kibana
+sudo chkconfig --add kibana
+sudo -i service kibana start
+
 
 
 
