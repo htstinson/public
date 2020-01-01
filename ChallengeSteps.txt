@@ -1,6 +1,7 @@
 1. Create EC2 Instance
 auto assign ip 
-use existing ssh key
+use an existing ssh key
+create or update a security group allowing port 5601 for kibana
 
 2. Connect using putty
 ec2-user@[IP Address]
